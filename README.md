@@ -2,6 +2,8 @@
 
 A modern web application for tracking body weight with animated trend graphs and insights.
 
+![WeightWave](screenshot.png)
+
 ## Features
 
 -📊 Interactive Dashboard – Track weight entries over time with a clean interface

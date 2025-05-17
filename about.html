@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}About WeightWave{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title mb-0">About WeightWave</h2>
+            </div>
+            <div class="card-body">
+                <div class="story-section mb-5">
+                    <h3 class="mb-4">The Story Behind WeightWave</h3>
+                    <p class="lead">
+                        Once upon a time, there was a developer who loved coding and fitness. 🏃‍♂️💻
+                    </p>
+                    <p>
+                        During a particularly challenging fitness journey, they found themselves juggling between multiple apps and spreadsheets to track their weight progress. The existing apps were either too complex with unnecessary features or too simple without the insights they needed.
+                    </p>
+                    <p>
+                        One day, while watching their weight fluctuate on a basic line graph, they had an epiphany: "Why not create something that's both beautiful and practical?" And thus, WeightWave was born - a labor of love that combines elegant design with powerful insights.
+                    </p>
+                    <p>
+                        The goal was simple: create a weight tracking application that's:
+                    </p>
+                    <ul>
+                        <li>🎯 Easy to use but powerful enough for serious tracking</li>
+                        <li>📊 Visually appealing with animated, insightful graphs</li>
+                        <li>📱 Accessible anywhere, on any device</li>
+                        <li>💡 Focused on what matters - your progress</li>
+                    </ul>
+                    <p>
+                        I hope WeightWave helps people track their fitness journeys with style and simplicity. Whether they’re training for a marathon, working towards a healthier lifestyle, or simply keeping an eye on their weight, I hope the app makes their journey a little more enjoyable and rewarding.
+                    </p>
+                </div>
+
+                <div class="features-section mb-5">
+                    <h3 class="mb-4">Why Choose WeightWave?</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="feature-card mb-4">
+                                <h4>📈 Smart Tracking</h4>
+                                <p>Beautiful animated graphs that make tracking your progress a joy. Color-coded trends help you visualize your journey at a glance.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="feature-card mb-4">
+                                <h4>🎯 Goal Setting</h4>
+                                <p>Set your target weight and watch your progress with a clear visual indicator of your goals.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="feature-card mb-4">
+                                <h4>📊 BMI Insights</h4>
+                                <p>Automatic BMI calculation helps you understand your health metrics better.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="feature-card mb-4">
+                                <h4>📱 Always Accessible</h4>
+                                <p>Use WeightWave on any device - your progress is always at your fingertips.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="developer-section">
+                    <h3 class="mb-4">Meet the Developer</h3>
+                    <div class="developer-card p-4 bg-light rounded">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4>👋 Hi, I'm Arpit Jain</h4>
+                                <p class="mb-2">
+                                    A passionate developer who believes in creating tools that make a difference in people's lives. When I'm not coding, you can find me:
+                                </p>
+                                <ul>
+                                    <li>🏃‍♂️ Running marathons (virtually, at least!)</li>
+                                    <li>📚 Reading tech blogs and fitness articles</li>
+                                    <li>☕️ Experimenting with new coffee brewing methods</li>
+                                    <li>🎮 Playing the occasional video game</li>
+                                </ul>
+                                <p class="mb-0">
+                                    I created WeightWave to solve a real problem I faced, and I'm excited to share it with the world. Feel free to reach out if you have any questions or suggestions!
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="developer-avatar mb-3">
+                                    <!-- Replace with your avatar or a placeholder -->
+                                    <img src="static\profile.jpg" alt="Developer Avatar" class="rounded-circle img-fluid">
+                                </div>
+                                <div class="social-links">
+                                    <a href="https://github.com/arpitjainnn14" class="text-decoration-none me-2">GitHub</a>
+                                    <a href="https://www.linkedin.com/in/arpitjainnnn14/" class="text-decoration-none me-2">LinkedIn</a>
+            
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.story-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #495057;
+}
+
+.feature-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    height: 100%;
+    transition: transform 0.2s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card h4 {
+    color: #0d6efd;
+    margin-bottom: 1rem;
+}
+
+.developer-card {
+    border: 1px solid #dee2e6;
+}
+
+.developer-avatar img {
+    max-width: 150px;
+    border: 3px solid #0d6efd;
+}
+
+.social-links a {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.social-links a:hover {
+    color: #0a58ca;
+}
+</style>
+{% endblock %} 

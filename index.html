@@ -1,0 +1,525 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- Weight Entry Form -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="bi bi-plus-circle me-2"></i>
+                <h5 class="card-title mb-0">Add Weight Entry</h5>
+            </div>
+            <div class="card-body">
+                <form id="weightForm" method="POST" action="{{ url_for('submit') }}" class="needs-validation" novalidate>
+                    {{ form.csrf_token }}
+                    
+                    <div class="mb-3">
+                        {{ form.date.label(class="form-label") }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                            {{ form.date(class="form-control", type="date") }}
+                        </div>
+                        {% if form.date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.date.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.weight.label(class="form-label") }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-speedometer2"></i></span>
+                            {{ form.weight(class="form-control", type="number", step="0.1", placeholder="Enter weight in kg") }}
+                            <span class="input-group-text">kg</span>
+                        </div>
+                        {% if form.weight.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.weight.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.height.label(class="form-label") }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-arrows-vertical"></i></span>
+                            {{ form.height(class="form-control", type="number", step="0.01", placeholder="Enter height in meters") }}
+                            <span class="input-group-text">m</span>
+                        </div>
+                        {% if form.height.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.height.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.target_weight.label(class="form-label") }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-bullseye"></i></span>
+                            {{ form.target_weight(class="form-control", type="number", step="0.1", placeholder="Enter target weight") }}
+                            <span class="input-group-text">kg</span>
+                        </div>
+                        {% if form.target_weight.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.target_weight.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.note.label(class="form-label") }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                            {{ form.note(class="form-control", rows="3", placeholder="Add a note about your progress...") }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-save me-2"></i>Save Entry
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="card mt-4">
+            <div class="card-header d-flex align-items-center">
+                <i class="bi bi-bar-chart me-2"></i>
+                <h5 class="card-title mb-0">Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div id="stats">
+                    <p class="mb-2">
+                        <i class="bi bi-circle-fill text-primary me-2"></i>
+                        Current Weight: <span id="currentWeight">-</span> kg
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-arrow-up-circle-fill text-danger me-2"></i>
+                        Highest Weight: <span id="highestWeight">-</span> kg
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-arrow-down-circle-fill text-success me-2"></i>
+                        Lowest Weight: <span id="lowestWeight">-</span> kg
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-calculator-fill text-info me-2"></i>
+                        Average Weight: <span id="averageWeight">-</span> kg
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-list-check text-secondary me-2"></i>
+                        Total Entries: <span id="totalEntries">-</span>
+                    </p>
+                    <p class="mb-0">
+                        <i class="bi bi-arrow-left-right text-warning me-2"></i>
+                        Weight Change: <span id="weightChange">-</span> kg (<span id="percentChange">-</span>%)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart and Table -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="bi bi-graph-up me-2"></i>
+                    <h5 class="card-title mb-0 d-inline">Weight Trend</h5>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="refreshChart">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative;">
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card mt-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="bi bi-table me-2"></i>
+                    <h5 class="card-title mb-0 d-inline">Recent Entries</h5>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="refreshTable">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-calendar me-1"></i>Date</th>
+                                <th><i class="bi bi-speedometer2 me-1"></i>Weight (kg)</th>
+                                <th><i class="bi bi-calculator me-1"></i>BMI</th>
+                                <th><i class="bi bi-pencil me-1"></i>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody id="entriesTable">
+                            {% for entry in entries %}
+                            <tr>
+                                <td>{{ entry.date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ entry.weight }}</td>
+                                <td>{{ entry.calculate_bmi() if entry.height else '-' }}</td>
+                                <td>{{ entry.note or '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let weightChart;
+    const ctx = document.getElementById('weightChart').getContext('2d');
+    
+    // Initialize chart with improved styling
+    function initChart(data) {
+        const weights = data.map(entry => entry.weight);
+        const dates = data.map(entry => entry.date);
+        const targetWeight = data[0]?.target_weight;
+        
+        // Calculate color for each segment with improved colors
+        const colors = weights.map((weight, i) => {
+            if (i === 0) return 'rgba(67, 97, 238, 0.8)';  // Primary color
+            return weight > weights[i-1] 
+                ? 'rgba(247, 37, 133, 0.8)'  // Danger color
+                : 'rgba(76, 201, 240, 0.8)';  // Success color
+        });
+
+        if (weightChart) {
+            weightChart.destroy();
+        }
+
+        weightChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Weight (kg)',
+                    data: weights,
+                    borderColor: colors,
+                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true
+                },
+                ...(targetWeight ? [{
+                    label: 'Target Weight',
+                    data: Array(dates.length).fill(targetWeight),
+                    borderColor: 'rgba(255, 159, 64, 0.8)',
+                    borderDash: [5, 5],
+                    borderWidth: 2,
+                    pointRadius: 0
+                }] : [])]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(43, 45, 66, 0.9)',
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                const entry = data[context.dataIndex];
+                                let label = `Weight: ${entry.weight} kg`;
+                                if (entry.bmi) label += ` (BMI: ${entry.bmi})`;
+                                if (entry.note) label += `\nNote: ${entry.note}`;
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)',
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Update stats with icons
+    function updateStats(stats) {
+        document.getElementById('currentWeight').textContent = stats.current_weight.toFixed(1);
+        document.getElementById('highestWeight').textContent = stats.highest_weight.toFixed(1);
+        document.getElementById('lowestWeight').textContent = stats.lowest_weight.toFixed(1);
+        document.getElementById('averageWeight').textContent = stats.average_weight.toFixed(1);
+        document.getElementById('totalEntries').textContent = stats.total_entries;
+        
+        const weightChange = stats.weight_change.toFixed(1);
+        const percentChange = stats.percent_change.toFixed(1);
+        const changeElement = document.getElementById('weightChange');
+        const percentElement = document.getElementById('percentChange');
+        
+        changeElement.textContent = weightChange;
+        percentElement.textContent = percentChange;
+        
+        // Add color based on weight change
+        if (weightChange < 0) {
+            changeElement.className = 'text-success';
+            percentElement.className = 'text-success';
+        } else if (weightChange > 0) {
+            changeElement.className = 'text-danger';
+            percentElement.className = 'text-danger';
+        } else {
+            changeElement.className = 'text-secondary';
+            percentElement.className = 'text-secondary';
+        }
+    }
+
+    // Update table with animations
+    function updateTable(entries) {
+        const tbody = document.getElementById('entriesTable');
+        const rows = entries.map(entry => `
+            <tr class="animate__animated animate__fadeIn">
+                <td>${entry.date}</td>
+                <td>${entry.weight}</td>
+                <td>${entry.bmi || '-'}</td>
+                <td>${entry.note || '-'}</td>
+            </tr>
+        `).join('');
+        
+        tbody.innerHTML = rows;
+    }
+
+    // Fetch data and update all components
+    function fetchData() {
+        // Add loading state
+        document.querySelectorAll('.card').forEach(card => card.classList.add('loading'));
+        
+        fetch('/data')
+            .then(response => response.json())
+            .then(data => {
+                initChart(data);
+                updateTable(data);
+                return fetch('/stats');
+            })
+            .then(response => response.json())
+            .then(stats => {
+                updateStats(stats);
+                // Remove loading state
+                document.querySelectorAll('.card').forEach(card => card.classList.remove('loading'));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Remove loading state on error
+                document.querySelectorAll('.card').forEach(card => card.classList.remove('loading'));
+            });
+    }
+
+    // Handle form submission with validation
+    const form = document.getElementById('weightForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!this.checkValidity()) {
+            e.stopPropagation();
+            this.classList.add('was-validated');
+            return;
+        }
+        
+        const formData = new FormData(this);
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        
+        // Add loading state to button
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="bi bi-arrow-repeat spin me-2"></i>Saving...';
+        
+        fetch('/submit', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success alert-dismissible fade show';
+                alert.innerHTML = `
+                    <i class="bi bi-check-circle me-2"></i>
+                    Weight entry saved successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                form.parentNode.insertBefore(alert, form);
+                
+                fetchData();
+                this.reset();
+                this.classList.remove('was-validated');
+            } else {
+                // Show error message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger alert-dismissible fade show';
+                alert.innerHTML = `
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Error: ${Object.values(data.errors).flat().join(', ')}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                form.parentNode.insertBefore(alert, form);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Show error message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-danger alert-dismissible fade show';
+            alert.innerHTML = `
+                <i class="bi bi-exclamation-circle me-2"></i>
+                An error occurred while saving the entry.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            form.parentNode.insertBefore(alert, form);
+        })
+        .finally(() => {
+            // Restore button state
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        });
+    });
+
+    // Add refresh buttons functionality
+    document.getElementById('refreshChart').addEventListener('click', fetchData);
+    document.getElementById('refreshTable').addEventListener('click', fetchData);
+
+    // Initial data load
+    fetchData();
+});
+</script>
+
+<style>
+/* Additional styles for the index page */
+.chart-container {
+    height: 400px;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate__animated {
+    animation-duration: 0.5s;
+}
+
+.animate__fadeIn {
+    animation-name: fadeIn;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: var(--primary-color);
+    background-color: #fff;
+}
+
+/* Loading animation for cards */
+.card.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.card.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+</style>
+{% endblock %} 

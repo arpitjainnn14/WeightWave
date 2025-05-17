@@ -22,7 +22,7 @@ A modern web application for tracking body weight with animated trend graphs and
 
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/weightwave.git
+   git clone https://github.com/arpitjainnn14/weightwave.git
    cd weightwave
    ```
 

@@ -1,4 +1,4 @@
-# WeightWatchr
+# WeightWave
 
 A modern web application for tracking body weight with animated trend graphs and insights.
 
@@ -47,7 +47,7 @@ A modern web application for tracking body weight with animated trend graphs and
 ## Project Structure
 
 ```
-weightwatchr/
+weightwave/
 ├── app.py              # Main application file
 ├── models.py           # Database models
 ├── requirements.txt    # Project dependencies

@@ -4,17 +4,28 @@ A modern web application for tracking body weight with animated trend graphs and
 
 ## Features
 
-- 📊 Interactive weight tracking dashboard
-- 📈 Animated trend graphs with Chart.js
-- 📱 Responsive design for mobile and desktop
-- 📝 Optional notes for each weight entry
-- 🎯 Goal tracking and progress visualization
-- 📊 BMI calculation
-- 📤 Data export functionality
+-📊 Interactive Dashboard – Track weight entries over time with a clean interface
+
+-📈 Animated Trend Graphs – Visualize progress using Chart.js
+
+-📝 Daily Notes – Add personal notes to each weight entry
+
+-🎯 Goal Tracking – Set and monitor your weight goals
+
+-🧮 BMI Calculator – Auto-calculate your Body Mass Index
+
+-📤 Data Export – Download your data for personal records
+
+-📱 Responsive UI – Optimized for mobile and desktop
 
 ## Setup Instructions
 
 1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/weightwave.git
+   cd weightwave
+   ```
+
 2. Create a virtual environment:
    ```bash
    python -m venv venv
@@ -48,13 +59,17 @@ A modern web application for tracking body weight with animated trend graphs and
 
 ```
 weightwave/
-├── app.py              # Main application file
-├── models.py           # Database models
-├── requirements.txt    # Project dependencies
-├── static/            # Static files (CSS, JS, images)
+├── app.py              # Main Flask application
+├── forms.py            # Form classes (Flask-WTF)
+├── models.py           # SQLAlchemy models
+├── requirements.txt    # Python dependencies
+├── static/             # Static assets (CSS, JS, images)
 │   ├── css/
 │   └── js/
-└── templates/         # HTML templates
-    ├── base.html
-    └── index.html
+├── templates/          # HTML templates
+│   ├── base.html
+│   └── index.html
+├── migrations/         # Database migration files (Flask-Migrate)
+├── instance/           # Instance folder for configs (if any)
+└── README.md           # Project documentation
 ``` 
